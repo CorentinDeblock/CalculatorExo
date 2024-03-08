@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="wnameth=device-wnameth, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="pow">
+                <div id="pow-light" class="pow-light pow-disabled"></div>
+                <p class="pow-text">Pow</p>
+            </div>
+            <div class="background">
+                <input class="result" id="result"></input>
+            </div>
+        </div>
+        <div class="buttons" id="buttons">
+            <div class="buttons-grid">
+                <button class="button" name="calc-button" handler="$x%">%</button>
+                <button class="button" name="calc-button" id="CE" nodisplay>CE</button>
+                <button class="button" name="calc-button" id="C" nodisplay>C</button>
+                <button class="button" name="calc-button" id="remove" nodisplay>⇍</button>
+            </div>
+            <div class="buttons-grid">
+                <button class="button" name="calc-button" handler="⅟$x">⅟𝑥</button>
+                <button class="button" id="exp" name="calc-button" nodisplay>x²</button>
+                <button class="button" name="calc-button" handler="√$x">√</button>
+                <button class="button" name="calc-button">÷</button>
+            </div>
+            <div class="buttons-grid">
+                <button class="button" name="calc-button">7</button>
+                <button class="button" name="calc-button">8</button>
+                <button class="button" name="calc-button">9</button>
+                <button class="button" name="calc-button">*</button>
+            </div>
+            <div class="buttons-grid">
+                <button class="button" name="calc-button">4</button>
+                <button class="button" name="calc-button">5</button>
+                <button class="button" name="calc-button">6</button>
+                <button class="button" name="calc-button">-</button>
+            </div>
+            <div class="buttons-grid">
+                <button class="button" name="calc-button">1</button>
+                <button class="button" name="calc-button">2</button>
+                <button class="button" name="calc-button">3</button>
+                <button class="button" name="calc-button">+</button>
+            </div>
+            <div class="buttons-grid">
+                <button class="button" name="calc-button" id="plusorminus" nodisplay>±</button>
+                <button class="button" name="calc-button" value="0">0</button>
+                <button class="button" name="calc-button" value=".">.</button>
+                <button class="button" name="calc-button" id="equal" nodisplay>=</button>
+            </div>
+        </div>
+    </div>
+    <script src="./js/helper.js"></script>
+    <script src="./js/lexer.js"></script>
+    <script src="./js/index.js"></script>
+</body>
+</html>
