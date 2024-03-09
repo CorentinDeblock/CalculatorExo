@@ -3,26 +3,6 @@ const WRITING_MODE = {
     exp: Symbol("exp")
 }
 
-
-const VALID_KEYBOARD_KEY = {
-    "0": Symbol("0"),
-    "1": Symbol("1"),
-    "2": Symbol("2"),
-    "3": Symbol("3"),
-    "4": Symbol("4"),
-    "5": Symbol("5"),
-    "6": Symbol("6"),
-    "7": Symbol("7"),
-    "8": Symbol("8"),
-    "9": Symbol("9"),
-    "*": Symbol("*"),
-    "-": Symbol("-"),
-    "/": Symbol("/"),
-    "+": Symbol("+"),
-    "%": Symbol("%"),
-    ".": Symbol("."),
-}
-
 // Max css display 
 // 1.761050914342067e+308 (22)
 
@@ -55,7 +35,7 @@ function RefreshLight() {
 function Exp(){
     let lastNumber = GetLastNumber();
     let lastLetter = GetLastLetter();
-    
+
     // Check if the last letter of the display is not a exponent expresion
     if(!IsValidExpExpr(lastLetter)) {
         // If the writing mode is normal then use exponent write mode. Else use normal write mode
@@ -64,13 +44,14 @@ function Exp(){
         } else {
             writingMode = WRITING_MODE.normal
         }
-        return
     }
 
     // If there is input on the display. Then allow exponent write mode
     if(lastNumber != "") {
         writingMode = WRITING_MODE.exp
     }
+    
+    RefreshLight()
 }
 
 // Clear the input on the display. Then set the writing mode to normal and refresh the pow light 
@@ -207,7 +188,7 @@ function ValidateInput(input) {
     // the last letter is not a number AND
     // the input is not the backspace sign AND
     // the input is not the exponent sign.
-    // Then is the writing mode to normal
+    // Then set the writing mode to normal
     if(!IsCharCanBeExp(input) &&
         !IsNum(lastLetter) &&
         input !== "⇍" &&
@@ -216,9 +197,7 @@ function ValidateInput(input) {
     }
 
     // If the input is a dot and there is already a dot in the last number then do not validate the input
-    // Remember that input is indenpendant from the writing mode. That does mean that.
-    // · = .
-    // . = .
+    // Remember that input is indenpendant of writing mode.
     if(input === ".") {
         if(writingMode === WRITING_MODE.normal && GetLastNumber().includes(".") || 
            writingMode === WRITING_MODE.exp && GetLastExp().includes("·")
@@ -243,8 +222,7 @@ function ValidateInput(input) {
     // the input is a letter AND the input display is empty OR
     // the input is a number AND the last letter from the display is a percent
     // Then do not allow the input 
-    if(IsAlpha(input) && IsAlpha(lastLetter) || 
-       IsAlpha(input) && result.value.length === 0 || 
+    if(IsAlpha(input) && IsAlpha(lastLetter) && !IsValidExpExpr(lastLetter) ||
        IsNum(input) && lastLetter === "%") {
         return false
     }
@@ -293,73 +271,9 @@ result.addEventListener("keydown", (input) => {
     RefreshLight()
 })
 
-function OnInput(event) {
-    if(event.key == "ArrowLeft" || event.key == "ArrowRight") {
-        return
-    }
-
-    if(event.key == "c" && event.control) {
-        return
-    }
-
-    // if the key pressed is backspace.
-    if(event.key === "Backspace") {
-        // If the input is equal to "Infinity" then clear everything. Else remove the last letter
-        if(result.value === "Infinity") {
-            Clear()
-        } else {
-            RemoveLastLetter()
-        }
-
-        // Prevent the natural input action to spread to the display
-        return event.preventDefault()
-    }
-
-    // If the key is Enter then do the operation
-    if(event.key === "Enter") {
-        return Equal()
-    }
-
-    // If the input is not valid. Then do not allow the input to spread to the display
-    if(!ValidateInput(event.key)) {
-        return event.preventDefault()
-    }
-    
-    // If the input is the keyboard exponent sign then activate exponent mode
-    if(event.key === "²") {
-        Exp()
-        return event.preventDefault()
-    }
-
-    // Check on all the allowed key
-    for(let validKey in VALID_KEYBOARD_KEY) {
-        // If we find the key and if we are in the normal writing mode then allow the input
-        if(event.key === validKey) {
-            // However if we are in the exponent mode and the input is a valid exponent key
-            if(writingMode === WRITING_MODE.exp && IsCharCanBeExp(validKey)) {
-                // Get the position of the input cursor
-                let selectionStart = result.selectionStart
-                // Get the beggining input display from input cursor
-                let begin = result.value.slice(0, selectionStart)
-                // Get the end input display from the input cursor
-                let end = result.value.slice(selectionStart)
-
-                // Reconstruct the input display and place the exponent character
-                result.value = begin + FromNumToExp(event.key) + end
-                // Set the cursor to the front of the last know position (by default the cursor is gonna go the end of the display)
-                result.setSelectionRange(selectionStart + 1, selectionStart + 1)
-                // Since we change the selection range. We also need to set the scroll the end
-                result.scrollLeft = result.scrollWidth
-
-                // Prevent the original input to spread to the end
-                event.preventDefault()
-            }
-
-            return
-        }
-    }
-}
-
 function Equal(){
-    result.value = Evaluate(result.value)
+    if(IsNum(GetLastLetter()) || GetLastLetter() === "%" || IsExp(GetLastLetter())) {
+        result.value = Evaluate(result.value)
+        writingMode = WRITING_MODE.normal
+    }
 }

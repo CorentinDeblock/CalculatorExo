@@ -177,6 +177,6 @@ function Evaluate(entry) {
         // Remove the processed input
         processed = processed.slice(1)
     }
-
+    
     return eval(jstr)
 }
